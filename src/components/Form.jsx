@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Button, Stack, Form } from 'react-bootstrap';
+import { useDataContext } from "../contexts/dataContext";
 
 function UserForm() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    attachFile: null
-  });
+  const { formData, setFormData } = useDataContext();
+  // const [formData, setFormData] = useState({
+  //   firstName: "",
+  //   lastName: "",
+  //   attachFile: null
+  // });
 
   const handleChange = (e) => {
     setFormData(prvState => ({
@@ -14,12 +16,13 @@ function UserForm() {
       [e.target.name]: e.target.value
     }))
   }
-  const handleFile = (e) => {
-    setFormData(prvState => ({
-      ...prvState,
-      [e.target.name]: e.target.files[0]
-    }))
-  }
+
+  // const handleFile = (e) => {
+  //   setFormData(prvState => ({
+  //     ...prvState,
+  //     [e.target.name]: e.target.files[0]
+  //   }))
+  // }
 
   const SumbitForm = (e) => {
     e.preventDefault();
@@ -30,7 +33,7 @@ function UserForm() {
     setFormData(() => ({
       firstName: "",
       lastName: "",
-      attachFile: ""
+      // attachFile: ""
     }))
   }
 
@@ -58,10 +61,10 @@ function UserForm() {
           onChange={handleChange}
         />
       </Form.Group>
-      <Form.Group className="mb-3">
+      {/* <Form.Group className="mb-3">
         <Form.Label htmlFor='attachFile'>Attach File</Form.Label>
         <Form.Control id="attachFile" name="attachFile" type="file" onChange={handleFile} />
-      </Form.Group>
+      </Form.Group> */}
       <Stack direction='horizontal' gap={3}>
         <Button variant="primary" type="submit">
           Save
