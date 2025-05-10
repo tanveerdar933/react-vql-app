@@ -1,40 +1,55 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import VQR from "../components/VQR";
+import { useDataContext } from "../contexts/dataContext";
 
 const ScanQr = () => {
-  const qrRef = useRef(null);
-  function onScan(data) {
-    //do something with the result
-    console.log('onScan', data);
-  }
-  function onInit(data) {
-    console.log('onInit', data);
-  }
-  useEffect(() => {
-    if (qrRef && qrRef.current) {
-      qrRef.current.setAttribute("queryId", "6565c38081738c00554d0334");
-      qrRef.current.setAttribute("qrcodeOwner", "shareledger129j2ru5mvj9v2c7af9ym8keu844ca27myasuue");
-      qrRef.current.addEventListener("oninit", onInit);
-      qrRef.current.addEventListener("onscan", onScan);
-    }
-    return () => {
-      qrRef.current.removeEventListener("oninit", onInit);
-      qrRef.current.removeEventListener("onscan", onScan);
-    }
-  }, [qrRef]);
+  const { formData, setFormData } = useDataContext();
+  const navigate = useNavigate();
 
+  const onInit = (data) => {
+    // console.log("onInit", data.detail);
+  };
+
+  const onScan = (data) => {
+    const result = JSON.parse(data.detail.result).qrRes.split("$");
+    setFormData({
+      firstName: result[0],
+      lastName: result[1]
+    })
+  };
+
+  useEffect(() => {
+    if (formData.firstName !== "") {
+      console.clear();
+      navigate("form");
+    }
+  }, [formData])
 
   return (
-    <div
-      ref={qrRef}
-      id="qrContainer"
-      mode="dynamic"
-      app="Identifi Me"
-      className="sharering-query"
-    >
-      <div className="qrcode-content">
-        <div id="qrcode"></div>
-      </div>
-    </div>
+    <Container fluid>
+      <Container>
+        <Row style={{ height: "80vh" }} className="justify-content-center align-items-center">
+          <Col xs={5}>
+            <Card>
+              <Card.Body className="d-flex flex-column align-items-center">
+                <h1 className="mb-4">Scan it with Identifi me App</h1>
+                <VQR
+                  queryId="6565c38081738c00554d0334"
+                  mode="dynamic"
+                  qrcodeOwner="shareledger129j2ru5mvj9v2c7af9ym8keu844ca27myasuue"
+                  app="Identifi Me"
+                  metadata="{'correlationId':'123456'}"
+                  onInit={onInit}
+                  onScan={onScan}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </Container>
   )
 }
 
